@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生成AIで仕事を楽にする方法</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Atlassian Design Colors */
+            --primary-color: #0052CC;
+            --secondary-color: #36B37E;
+            --accent-color: #FF5630;
+            --text-color: #172B4D;
+            --text-secondary: #6B778C;
+            --light-bg: #F4F5F7;
+            --white: #FFFFFF;
+            --gray: #97A0AF;
+            --success: #36B37E;
+            --warning: #FFAB00;
+            --error: #DE350B;
+            --neutral: #DFE1E6;
+            --brand: #0052CC;
+            --elevation-shadow: 0 2px 6px rgba(3, 102, 214, 0.15);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Noto Sans', 'Ubuntu', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.5;
+            color: var(--text-color);
+            background: var(--light-bg);
+            overflow: hidden;
+            height: 100vh;
+            font-weight: 400;
+        }
+
+        .presentation-container {
+            height: 100vh;
+            width: 100vw;
+            position: relative;
+        }
+
+        .slide {
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            background: var(--white);
+            padding: 60px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            overflow-y: auto;
+            animation: slideIn 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.98);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* タイトルスライド */
+        .title-slide {
+            text-align: center;
+            display: flex !important;
+            flex-direction: column;
+            justify-content: center;
+            background: #ffffff;
+            color: var(--text-color);
+        }
+
+        .title-slide h1 {
+            font-size: 3.2em;
+            margin-bottom: 30px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--primary-color);
+            line-height: 1.3;
+        }
+
+        .title-slide .subtitle {
+            font-size: 1.6em;
+            margin-bottom: 40px;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .title-slide .divider {
+            width: 120px;
+            height: 4px;
+            background: var(--primary-color);
+            margin: 40px auto;
+            border-radius: 2px;
+        }
+
+        .title-slide .date {
+            font-size: 1.2em;
+            opacity: 0.8;
+        }
+
+        /* 通常スライド - Atlassian Typography (Large Sizes) */
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 32px;
+            color: var(--text-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 16px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+
+        h2 {
+            font-size: 2.25rem;
+            margin: 24px 0 16px 0;
+            color: var(--text-color);
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+
+        h3 {
+            font-size: 1.75rem;
+            margin: 20px 0 12px 0;
+            color: var(--text-color);
+            font-weight: 600;
+        }
+
+        /* テキスト - Atlassian Typography (Large Sizes) */
+        p {
+            font-size: 1.25rem;
+            margin: 16px 0;
+            line-height: 1.6;
+            color: var(--text-color);
+        }
+
+        ul, ol {
+            margin: 16px 0;
+            padding-left: 24px;
+        }
+
+        li {
+            margin: 10px 0;
+            font-size: 1.25rem;
+            line-height: 1.6;
+            color: var(--text-color);
+        }
+
+        /* コードブロック - Atlassian Design (Extra Large Sizes) */
+        .code-container {
+            position: relative;
+            margin: 24px 0;
+        }
+
+        pre {
+            background: #F4F5F7;
+            border: 1px solid var(--neutral);
+            border-radius: 6px;
+            padding: 24px;
+            margin: 0;
+            overflow-x: auto;
+            font-size: 1.125rem;
+            line-height: 1.7;
+            box-shadow: var(--elevation-shadow);
+        }
+
+        .copy-button {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: var(--white);
+            border: 1px solid var(--neutral);
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s ease-in-out;
+            box-shadow: var(--elevation-shadow);
+        }
+
+        .copy-button:hover {
+            background: var(--light-bg);
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .copy-button.copied {
+            background: var(--success);
+            border-color: var(--success);
+            color: var(--white);
+        }
+
+        code {
+            font-family: 'SFMono-Regular', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', monospace;
+            color: var(--text-color);
+            background: #F4F5F7;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 1.125rem;
+        }
+
+        /* 強調 - Atlassian Design */
+        .highlight {
+            background: rgba(0, 82, 204, 0.1);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+
+        .highlight-box {
+            background: var(--light-bg);
+            border-left: 4px solid var(--primary-color);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 6px 6px 0;
+            font-size: 1.25rem;
+            line-height: 1.6;
+        }
+
+        /* カード - Atlassian Design */
+        .card {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 24px;
+            margin: 24px 0;
+            box-shadow: var(--elevation-shadow);
+            border: 1px solid var(--neutral);
+            transition: box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 12px rgba(3, 102, 214, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .card.success {
+            border-left: 4px solid var(--success);
+            background: linear-gradient(90deg, rgba(54, 179, 126, 0.05), var(--white));
+        }
+
+        .card.warning {
+            border-left: 4px solid var(--warning);
+            background: linear-gradient(90deg, rgba(255, 171, 0, 0.05), var(--white));
+        }
+
+        .card.error {
+            border-left: 4px solid var(--error);
+            background: linear-gradient(90deg, rgba(222, 53, 11, 0.05), var(--white));
+        }
+
+        /* 比較レイアウト */
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin: 40px 0;
+        }
+
+        .comparison-item {
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .before {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            color: var(--white);
+        }
+
+        .after {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            color: var(--primary-color);
+        }
+
+        /* Result boxes for prompt examples */
+        .result-box {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+
+        .result-box.error {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            color: var(--white);
+        }
+
+        .result-box.success {
+            background: rgba(54, 179, 126, 0.1);
+            border: 2px solid var(--success);
+            color: var(--text-color);
+        }
+
+        .before h3, .after h3 {
+            margin-top: 0;
+        }
+
+        /* プロンプト例と出力例のスタイル */
+        .prompt-example, .output-example {
+            background: var(--light-bg);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .prompt-example h3, .output-example h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .prompt-example pre, .output-example pre {
+            background: var(--white);
+            border: 2px solid var(--neutral);
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+
+        /* 画像 */
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            margin: 30px 0;
+            border: 3px solid var(--light-bg);
+        }
+
+        .image-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .image-caption {
+            font-size: 1.1em;
+            color: var(--gray);
+            margin-top: 15px;
+            font-style: italic;
+        }
+
+        /* ナビゲーション（非表示） */
+        .nav-controls {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            gap: 20px;
+            z-index: 1001;
+            background: var(--white);
+            padding: 15px 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-btn {
+            padding: 12px 24px;
+            background: var(--primary-color);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            background: #0747A6;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 82, 204, 0.3);
+        }
+
+        .nav-btn:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .nav-btn:disabled {
+            background: var(--gray);
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .slide-counter {
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            font-size: 16px;
+        }
+
+        /* プログレスバー - Atlassian Design */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--neutral);
+            z-index: 1000;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary-color);
+            transition: width 0.3s ease-in-out;
+            border-radius: 0 2px 2px 0;
+        }
+
+        /* スライド番号 - Atlassian Design */
+        .slide-number {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            background: var(--white);
+            padding: 8px 16px;
+            border-radius: 6px;
+            box-shadow: var(--elevation-shadow);
+            font-weight: 500;
+            color: var(--text-secondary);
+            z-index: 1000;
+            font-size: 0.875rem;
+            border: 1px solid var(--neutral);
+        }
+
+        /* PC専用設計のためレスポンシブコードを削除 */
+
+        /* 特殊要素 */
+        .step-number {
+            display: inline-flex;
+            width: 32px;
+            height: 32px;
+            background: var(--primary-color);
+            color: var(--white);
+            border-radius: 50%;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-right: 12px;
+            font-size: 0.875rem;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin: 40px 0;
+        }
+
+        .feature-item {
+            background: var(--white);
+            padding: 24px;
+            border-radius: 8px;
+            text-align: center;
+            transition: box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
+            border: 1px solid var(--neutral);
+            box-shadow: var(--elevation-shadow);
+        }
+
+        .feature-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(3, 102, 214, 0.25);
+        }
+
+        .feature-icon {
+            font-size: 3em;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 80px;
+            height: 80px;
+            background: rgba(0, 82, 204, 0.1);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+        }
+
+        .summary-box {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: var(--white);
+            padding: 40px;
+            border-radius: 20px;
+            margin: 40px 0;
+            text-align: center;
+        }
+
+        .summary-box h2 {
+            color: var(--white);
+            margin-bottom: 20px;
+        }
+
+        .url-link {
+            font-size: 1.1em;
+            color: var(--secondary-color);
+            text-decoration: underline;
+            margin: 20px 0;
+            display: block;
+        }
+
+        /* リンクをクリック可能にする */
+        a {
+            color: var(--secondary-color);
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        a:hover {
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+
+        .center-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 80vh;
+        }
+    </style>
+</head>
+<body>
+    <!-- プログレスバー -->
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressBar"></div>
+    </div>
+
+    <!-- スライド番号 -->
+    <div class="slide-number" id="slideNumber">1 / 12</div>
+
+    <!-- プレゼンテーションコンテナ -->
+    <div class="presentation-container">
+        
+        <!-- スライド1: タイトル -->
+        <div class="slide active title-slide">
+            <h1>生成AIで<br>仕事を楽にする方法</h1>
+            <div class="divider"></div>
+            <p class="subtitle">警備・葬儀業務で今日から使える実践テクニック</p>
+            <div class="date">2025年10月27日</div>
+            <div class="logo">
+                <img src="/img/c-table_logo.png" alt="会社ロゴ" style="height: 80px; margin-top: 40px;">
+            </div>
+        </div>
+
+        <!-- スライド2: ChatGPTって何？ -->
+        <div class="slide">
+            <h1>ChatGPTって何？【超基礎】</h1>
+            <h2><i class="fas fa-robot"></i> AIアシスタント = 何でも答えてくれる優秀な秘書</h2>
+
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <div class="feature-icon"><i class="fas fa-pen"></i></div>
+                    <h3>文章を書く</h3>
+                    <p>報告書、メール、挨拶文など</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon"><i class="fas fa-question-circle"></i></div>
+                    <h3>教えてくれる</h3>
+                    <p>わからないことを何でも</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon"><i class="fas fa-edit"></i></div>
+                    <h3>文章を直す</h3>
+                    <p>まとめる、わかりやすくする</p>
+                </div>
+            </div>
+
+            <div class="highlight-box" style="margin-top: 40px;">
+                <h3><i class="fas fa-lightbulb"></i> 身近な例</h3>
+                <p style="font-size: 1.4em; line-height: 1.8;">
+                    スマホの<strong>Siri</strong>や<strong>Googleアシスタント</strong>のもっと賢い版<br>
+                    <strong>24時間365日、いつでも相談できる</strong>
+                </p>
+            </div>
+        </div>
+
+        <!-- スライド3: なぜ警備・葬儀の仕事でAIが役立つのか？ -->
+        <div class="slide">
+            <h1>なぜ警備・葬儀の仕事でAIが役立つのか？</h1>
+
+            <div class="comparison">
+                <div class="comparison-item before">
+                    <h3><i class="fas fa-exclamation-triangle"></i> 日常の困りごと</h3>
+                    <ul style="font-size: 1.1em;">
+                        <li>❌ 報告書を書くのに時間がかかる</li>
+                        <li>❌ 文章が苦手で、何を書いていいかわからない</li>
+                        <li>❌ お客様へのメールの言葉遣いが難しい</li>
+                        <li>❌ 同じような文章を何度も書いている</li>
+                    </ul>
+                </div>
+                <div class="comparison-item after">
+                    <h3><i class="fas fa-check-circle"></i> AIで解決！</h3>
+                    <ul style="font-size: 1.1em;">
+                        <li>✅ 5分かかった報告書が1分で完成</li>
+                        <li>✅ 文章が苦手でも、プロのような文章が書ける</li>
+                        <li>✅ 適切な言葉遣いを教えてくれる</li>
+                        <li>✅ テンプレートを毎回作ってくれる</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- スライド4: ChatGPTでできること -->
+        <div class="slide">
+            <h1>ChatGPTでできること</h1>
+            <h2><i class="fas fa-briefcase"></i> 警備・葬儀業務の具体例</h2>
+
+            <div class="comparison">
+                <div class="comparison-item before">
+                    <h3><i class="fas fa-shield-alt"></i> 警備業務</h3>
+                    <ul style="font-size: 1.1em;">
+                        <li>巡回報告書の作成</li>
+                        <li>事故・トラブル報告書の作成</li>
+                        <li>申し送り事項の整理</li>
+                        <li>クレーム対応の文章作成</li>
+                    </ul>
+                </div>
+                <div class="comparison-item after">
+                    <h3><i class="fas fa-praying-hands"></i> 葬儀業務</h3>
+                    <ul style="font-size: 1.1em;">
+                        <li>挨拶文・弔辞の作成</li>
+                        <li>ご遺族への案内文</li>
+                        <li>香典返しのお礼状</li>
+                        <li>葬儀プランの説明文</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="highlight-box" style="margin-top: 30px;">
+                <h3><i class="fas fa-check-circle"></i> 共通業務</h3>
+                <p style="font-size: 1.3em;">
+                    議事録の作成・お客様へのメール・社内連絡文・マニュアルの作成
+                </p>
+            </div>
+        </div>
+
+        <!-- スライド5: 基本的な使い方【3ステップ】 -->
+        <div class="slide">
+            <h1>基本的な使い方【3ステップ】</h1>
+
+            <div class="feature-grid">
+                <div class="card success">
+                    <div class="feature-icon"><span class="step-number" style="width: 60px; height: 60px; font-size: 2em;">1</span></div>
+                    <h3>ChatGPTのサイトにアクセス</h3>
+                    <p style="font-size: 1.1em; margin-top: 15px;">
+                        <a href="https://chat.openai.com/" target="_blank" style="color: var(--secondary-color); font-weight: bold;">
+                            https://chat.openai.com/
+                        </a>
+                    </p>
+                    <p style="font-size: 1.3em; font-weight: bold; color: var(--success); margin-top: 10px;">
+                        無料で使える！
+                    </p>
+                </div>
+                <div class="card primary">
+                    <div class="feature-icon"><span class="step-number" style="width: 60px; height: 60px; font-size: 2em; background: var(--secondary-color);">2</span></div>
+                    <h3>やってほしいことを書く</h3>
+                    <p style="font-size: 1.2em; margin-top: 15px;">
+                        普段の言葉で大丈夫<br>
+                        丁寧じゃなくてもOK
+                    </p>
+                </div>
+                <div class="card warning">
+                    <div class="feature-icon"><span class="step-number" style="width: 60px; height: 60px; font-size: 2em; background: var(--warning);">3</span></div>
+                    <h3>結果をコピーして使う</h3>
+                    <p style="font-size: 1.2em; margin-top: 15px;">
+                        気に入らなければ<br>
+                        「もっと○○にして」と<br>
+                        言い直せる
+                    </p>
+                </div>
+            </div>
+
+            <div class="highlight-box" style="margin-top: 30px;">
+                <h3><i class="fas fa-lightbulb"></i> ポイント</h3>
+                <p style="font-size: 1.4em;">
+                    スマホでもパソコンでもOK！<br>
+                    難しい操作は一切なし！
+                </p>
+            </div>
+        </div>
+
+        <!-- スライド6: 実践例①：巡回報告書を作る -->
+        <div class="slide">
+            <h1>実践例①：巡回報告書を作る</h1>
+
+            <div class="comparison">
+                <div class="comparison-item before">
+                    <h3><i class="fas fa-times-circle"></i> 悪い例（曖昧な指示）</h3>
+                    <div class="code-container">
+                        <pre><code>巡回報告書を書いて</code></pre>
+                    </div>
+                    <div class="result-box error">
+                        <strong>結果:</strong> 何の情報もないので、使えない文章が返ってくる
+                    </div>
+                </div>
+                <div class="comparison-item after">
+                    <h3><i class="fas fa-check-circle"></i> 良い例（具体的な指示）</h3>
+                    <div class="code-container">
+                        <pre><code>警備員の巡回報告書を作ってください。
+
+【情報】
+- 日時：2025年10月27日 22:00-6:00
+- 場所：○○ショッピングセンター
+- 担当：山田太郎
+- 異常：なし
+- 特記事項：駐車場の照明1箇所切れていた
+
+箇条書きで、簡潔に書いてください。</code></pre>
+                    </div>
+                    <div class="result-box success">
+                        <strong>結果:</strong> すぐに使える報告書ができる！
+                    </div>
+                </div>
+            </div>
+
+            <div class="highlight-box" style="margin-top: 20px;">
+                <h3><i class="fas fa-lightbulb"></i> ポイント</h3>
+                <p style="font-size: 1.2em;">
+                    <strong>具体的な情報を全部入れる</strong>ことが大事！<br>
+                    日時・場所・担当者・内容を伝えれば、良い報告書ができる
+                </p>
+            </div>
+        </div>
+
+        <!-- スライド7: 実践例②：葬儀の挨拶文を作る -->
+        <div class="slide">
+            <h1>実践例②：葬儀の挨拶文を作る</h1>
+            <h2><i class="fas fa-praying-hands"></i> 場面：葬儀の受付でご遺族にお渡しする挨拶文が必要</h2>
+
+            <div class="prompt-example">
+                <h3><i class="fas fa-pen"></i> 指示の例</h3>
+                <div class="code-container">
+                    <pre><code>葬儀の受付でご遺族にお渡しする挨拶文を作ってください。
+
+【条件】
+- 故人：田中花子様（享年85歳）
+- 喪主：長男の田中一郎様
+- 葬儀日時：2025年11月3日 13:00-15:00
+- 場所：〇〇セレモニーホール
+
+丁寧で心のこもった文章にしてください。
+200文字程度でお願いします。</code></pre>
+                </div>
+            </div>
+
+            <div class="output-example" style="margin-top: 30px;">
+                <h3><i class="fas fa-file-alt"></i> 出力イメージ</h3>
+                <div style="background: white; padding: 25px; border-radius: 10px; border: 2px solid var(--success);">
+                    <p style="font-size: 1.15em; line-height: 1.8;">
+                        この度は、田中花子様のご逝去を悼み、謹んでお悔やみ申し上げます。<br><br>
+                        ご生前のご厚情に深く感謝し、心からご冥福をお祈りいたします。<br><br>
+                        ご葬儀は下記の通り執り行われます。<br>
+                        日時：2025年11月3日（月）13:00-15:00<br>
+                        場所：〇〇セレモニーホール<br>
+                        喪主：田中一郎
+                    </p>
+                </div>
+                <p style="text-align: center; font-size: 1.4em; font-weight: bold; color: var(--success); margin-top: 20px;">
+                    <i class="fas fa-check-circle"></i> このまま使える！
+                </p>
+            </div>
+        </div>
+
+        <!-- スライド8: 実践例③：クレーム対応メールを作る -->
+        <div class="slide">
+            <h1>実践例③：クレーム対応メールを作る</h1>
+            <h2><i class="fas fa-exclamation-triangle"></i> 場面：警備員の対応にクレームが入った</h2>
+
+            <div class="prompt-example">
+                <h3><i class="fas fa-pen"></i> 指示の例</h3>
+                <div class="code-container">
+                    <pre><code>お客様からクレームが来ました。
+警備員として謝罪のメールを書いてください。
+
+【状況】
+- 巡回中に駐車場で車にぶつかりそうになった
+- お客様が「危ない！」と怒っている
+- こちらの不注意です
+
+【条件】
+- 誠実に謝罪する
+- 今後の対策も書く
+- 丁寧な言葉遣い
+- 300文字程度</code></pre>
+                </div>
+            </div>
+
+            <div class="comparison" style="margin-top: 30px;">
+                <div class="comparison-item before">
+                    <h3><i class="fas fa-times-circle"></i> 自分で書くと...</h3>
+                    <p style="font-size: 1.1em;">
+                        「すみませんでした。<br>
+                        気をつけます。」
+                    </p>
+                    <p style="color: var(--error); margin-top: 15px;">
+                        → 短すぎて誠意が伝わらない
+                    </p>
+                </div>
+                <div class="comparison-item after">
+                    <h3><i class="fas fa-check-circle"></i> AIが作ると...</h3>
+                    <p style="font-size: 1.05em; line-height: 1.7;">
+                        「この度は、私の不注意により、大変危険な思いをさせてしまい、誠に申し訳ございませんでした。巡回時の注意不足が原因であり、深く反省しております。今後は周囲の安全確認を徹底し、このようなことが二度と起きないよう十分注意してまいります。」
+                    </p>
+                    <p style="color: var(--success); margin-top: 15px;">
+                        → 丁寧で誠実な謝罪文！
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- スライド9: 良い指示を出す3つのコツ -->
+        <div class="slide">
+            <h1>良い指示を出す3つのコツ</h1>
+
+            <div class="feature-grid">
+                <div class="card success">
+                    <div class="feature-icon"><span class="step-number" style="width: 60px; height: 60px; font-size: 2em;">1</span></div>
+                    <h3>状況を具体的に伝える</h3>
+                    <div style="margin-top: 20px; text-align: left;">
+                        <p style="color: var(--error);">❌「報告書を書いて」</p>
+                        <p style="color: var(--success); margin-top: 10px;">✅「警備の巡回報告書を書いて。<br>場所は○○、時間は○○」</p>
+                    </div>
+                </div>
+                <div class="card primary">
+                    <div class="feature-icon"><span class="step-number" style="width: 60px; height: 60px; font-size: 2em; background: var(--secondary-color);">2</span></div>
+                    <h3>どんな形で欲しいか伝える</h3>
+                    <div style="margin-top: 20px; text-align: left;">
+                        <p style="font-size: 1.1em;">✅「箇条書きで」</p>
+                        <p style="font-size: 1.1em;">✅「丁寧な言葉遣いで」</p>
+                        <p style="font-size: 1.1em;">✅「200文字くらいで」</p>
+                    </div>
+                </div>
+                <div class="card warning">
+                    <div class="feature-icon"><span class="step-number" style="width: 60px; height: 60px; font-size: 2em; background: var(--warning);">3</span></div>
+                    <h3>必要な情報を全部入れる</h3>
+                    <div style="margin-top: 20px; text-align: left;">
+                        <p style="font-size: 1.1em;">日時、場所、担当者、内容など</p>
+                        <p style="font-size: 1.2em; font-weight: bold; margin-top: 10px; color: var(--warning);">
+                            情報が多いほど、<br>良い結果が出る！
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="summary-box" style="margin-top: 40px;">
+                <h3><i class="fas fa-lightbulb"></i> 覚え方（簡単な3点セット）</h3>
+                <p style="font-size: 1.5em; line-height: 1.8;">
+                    1. <strong>何を作りたいか</strong><br>
+                    2. <strong>どんな情報があるか</strong><br>
+                    3. <strong>どんな形で欲しいか</strong>
+                </p>
+            </div>
+        </div>
+
+        <!-- スライド10: やってはいけないこと【注意点】 -->
+        <div class="slide">
+            <h1>やってはいけないこと【注意点】</h1>
+
+            <div class="card error" style="margin: 30px 0;">
+                <h2><i class="fas fa-exclamation-triangle"></i> 個人情報は入力しない</h2>
+                <div style="font-size: 1.2em; margin: 20px 0;">
+                    <p style="color: var(--error); margin: 10px 0;">❌ お客様の住所、電話番号</p>
+                    <p style="color: var(--error); margin: 10px 0;">❌ クレジットカード番号</p>
+                    <p style="color: var(--error); margin: 10px 0;">❌ 個人が特定できる情報</p>
+                    <p style="color: var(--success); margin: 20px 0; font-weight: bold;">✅ 「お客様」「A社」など、仮の名前を使う</p>
+                </div>
+            </div>
+
+            <div class="card warning" style="margin: 30px 0;">
+                <h2><i class="fas fa-check-double"></i> そのまま使わず、必ず確認する</h2>
+                <div style="font-size: 1.2em; margin: 20px 0; text-align: left;">
+                    <p>• AIも間違えることがある</p>
+                    <p>• 最終確認は必ず人間が行う</p>
+                    <p>• 特に数字や固有名詞は要チェック</p>
+                </div>
+            </div>
+
+            <div class="card primary" style="margin: 30px 0;">
+                <h2><i class="fas fa-lock"></i> 社外秘の情報は入れない</h2>
+                <div style="font-size: 1.2em; margin: 20px 0; text-align: left;">
+                    <p>• 契約内容、金額など</p>
+                    <p>• 会社の機密情報</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- スライド11: 今日から始められる！【無料版の使い方】 -->
+        <div class="slide">
+            <h1>今日から始められる！</h1>
+            <h2><i class="fas fa-rocket"></i> 無料版の使い方</h2>
+
+            <div class="feature-grid">
+                <div class="card success">
+                    <div class="feature-icon"><i class="fas fa-laptop"></i></div>
+                    <h3>必要なもの</h3>
+                    <div style="margin-top: 20px; text-align: left;">
+                        <p style="font-size: 1.2em;">• スマホまたはパソコン</p>
+                        <p style="font-size: 1.2em;">• メールアドレス<br>（無料版でOK）</p>
+                    </div>
+                </div>
+                <div class="card primary">
+                    <div class="feature-icon"><i class="fas fa-user-plus"></i></div>
+                    <h3>始め方</h3>
+                    <div style="margin-top: 20px; text-align: left; font-size: 1.1em;">
+                        <p>1. <a href="https://chat.openai.com/" target="_blank" style="color: var(--secondary-color); font-weight: bold;">https://chat.openai.com/</a> にアクセス</p>
+                        <p>2. 「Sign up」（無料登録）をクリック</p>
+                        <p>3. メールアドレスとパスワードを入力</p>
+                        <p style="font-weight: bold; color: var(--primary-color);">4. すぐに使える！</p>
+                    </div>
+                </div>
+                <div class="card warning">
+                    <div class="feature-icon"><i class="fas fa-gift"></i></div>
+                    <h3>無料版でできること</h3>
+                    <div style="margin-top: 20px; text-align: left;">
+                        <p style="font-size: 1.2em;">• 基本的な文章作成は全部できる</p>
+                        <p style="font-size: 1.2em;">• 回数制限なし</p>
+                        <p style="font-size: 1.2em; font-weight: bold; color: var(--success);">• 今日紹介した例は全部無料で使える</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="summary-box" style="margin-top: 40px;">
+                <h3><i class="fas fa-lightbulb"></i> まずは試してみましょう！</h3>
+                <p style="font-size: 1.4em; line-height: 1.8;">
+                    簡単な報告書から始めてみる<br>
+                    わからないことがあれば質問する<br>
+                    使っていくうちに上達する
+                </p>
+            </div>
+        </div>
+
+        <!-- スライド12: まとめ -->
+        <div class="slide">
+            <h1>まとめ</h1>
+            <h2><i class="fas fa-star"></i> 今日覚えてほしいこと</h2>
+
+
+            <div class="feature-grid">
+                <div class="card success" style="padding: 30px;">
+                    <div class="feature-icon"><span class="step-number" style="width: 60px; height: 60px; font-size: 2em;">1</span></div>
+                    <h3>ChatGPTは無料で使える便利な秘書</h3>
+                </div>
+                <div class="card primary" style="padding: 30px;">
+                    <div class="feature-icon"><span class="step-number" style="width: 60px; height: 60px; font-size: 2em; background: var(--secondary-color);">2</span></div>
+                    <h3>報告書・メール・挨拶文などが簡単に作れる</h3>
+                </div>
+                <div class="card warning" style="padding: 30px;">
+                    <div class="feature-icon"><span class="step-number" style="width: 60px; height: 60px; font-size: 2em; background: var(--warning);">3</span></div>
+                    <h3>具体的に指示すれば、良い結果が返ってくる</h3>
+                </div>
+                <div class="card error" style="padding: 30px;">
+                    <div class="feature-icon"><span class="step-number" style="width: 60px; height: 60px; font-size: 2em; background: var(--error);">4</span></div>
+                    <h3>個人情報は入力しない！<br>最終確認は必ず行う！</h3>
+                </div>
+            </div>
+
+            <div class="summary-box" style="margin-top: 40px;">
+                <h2><i class="fas fa-arrow-right"></i> 明日からできること</h2>
+                <p style="font-size: 1.5em; line-height: 1.8;">
+                    <strong>• まずは無料登録してみる</strong><br>
+                    <strong>• 簡単な報告書を1つ作ってみる</strong><br>
+                    <strong>• わからなければ同僚と一緒に試す</strong>
+                </p>
+            </div>
+
+            <div class="highlight-box" style="margin-top: 40px; background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%); color: white;">
+                <h2 style="color: white; font-size: 2.5em;"><i class="fas fa-lightbulb"></i> AIは難しくない！</h2>
+                <p style="font-size: 1.6em; line-height: 1.8; color: white;">
+                    スマホが使えれば、ChatGPTも使える<br>
+                    失敗しても大丈夫、何度でもやり直せる<br>
+                    <strong style="font-size: 1.2em;">使えば使うほど、仕事が楽になる</strong>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ナビゲーションコントロール -->
+    <div class="nav-controls">
+        <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">
+            <i class="fas fa-chevron-left"></i>
+            前へ
+        </button>
+        <div class="slide-counter" id="slideCounter">1 / 12</div>
+        <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">
+            次へ
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        function showSlide(n) {
+            // 範囲チェック
+            if (n >= totalSlides) currentSlide = 0;
+            if (n < 0) currentSlide = totalSlides - 1;
+
+            // すべてのスライドを非表示
+            slides.forEach(slide => slide.classList.remove('active'));
+
+            // 現在のスライドを表示
+            slides[currentSlide].classList.add('active');
+
+            // プログレスバー更新
+            const progress = ((currentSlide + 1) / totalSlides) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+
+            // スライド番号更新
+            document.getElementById('slideNumber').textContent =
+                `${currentSlide + 1} / ${totalSlides}`;
+
+            // ナビゲーションのスライドカウンター更新
+            const slideCounter = document.getElementById('slideCounter');
+            if (slideCounter) {
+                slideCounter.textContent = `${currentSlide + 1} / ${totalSlides}`;
+            }
+
+            // ボタンの有効/無効切り替え
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+        }
+
+        function changeSlide(direction) {
+            currentSlide += direction;
+            showSlide(currentSlide);
+        }
+
+        // キーボードナビゲーション
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                if (currentSlide < totalSlides - 1) changeSlide(1);
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                if (currentSlide > 0) changeSlide(-1);
+            } else if (e.key === 'Home') {
+                currentSlide = 0;
+                showSlide(currentSlide);
+            } else if (e.key === 'End') {
+                currentSlide = totalSlides - 1;
+                showSlide(currentSlide);
+            }
+        });
+
+        // タッチ/スワイプサポート
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            if (touchEndX < touchStartX - swipeThreshold) {
+                // 左スワイプ（次へ）
+                if (currentSlide < totalSlides - 1) changeSlide(1);
+            }
+            if (touchEndX > touchStartX + swipeThreshold) {
+                // 右スワイプ（前へ）
+                if (currentSlide > 0) changeSlide(-1);
+            }
+        }
+
+        // 初期化
+        showSlide(0);
+
+        // コードブロックにコピーボタンを追加
+        function addCopyButtons() {
+            const preElements = document.querySelectorAll('pre');
+
+            preElements.forEach((pre, index) => {
+                let container;
+
+                // すでにコンテナで囲まれているかチェック
+                if (pre.parentNode.classList.contains('code-container')) {
+                    container = pre.parentNode;
+                } else {
+                    // preをcode-containerで囲む
+                    container = document.createElement('div');
+                    container.className = 'code-container';
+                    pre.parentNode.insertBefore(container, pre);
+                    container.appendChild(pre);
+                }
+
+                // コピーボタンがまだなければ追加
+                if (!container.querySelector('.copy-button')) {
+                    const copyButton = document.createElement('button');
+                    copyButton.className = 'copy-button';
+                    copyButton.innerHTML = '<i class="fas fa-copy"></i> コピー';
+                    copyButton.setAttribute('data-code-index', index);
+                    container.appendChild(copyButton);
+                }
+            });
+        }
+
+        // クリップボードにコピーする機能
+        async function copyToClipboard(text, button) {
+            try {
+                await navigator.clipboard.writeText(text);
+                
+                // ボタンの表示を一時的に変更
+                const originalHTML = button.innerHTML;
+                button.innerHTML = '<i class="fas fa-check"></i> コピー済み';
+                button.classList.add('copied');
+                
+                // 2秒後に元に戻す
+                setTimeout(() => {
+                    button.innerHTML = originalHTML;
+                    button.classList.remove('copied');
+                }, 2000);
+                
+            } catch (err) {
+                console.error('クリップボードへのコピーに失敗しました:', err);
+                
+                // フォールバック: 古いブラウザ用
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    button.innerHTML = '<i class="fas fa-check"></i> コピー済み';
+                    button.classList.add('copied');
+                    
+                    setTimeout(() => {
+                        button.innerHTML = '<i class="fas fa-copy"></i> コピー';
+                        button.classList.remove('copied');
+                    }, 2000);
+                } catch (err2) {
+                    console.error('フォールバックコピーも失敗しました:', err2);
+                }
+                document.body.removeChild(textArea);
+            }
+        }
+
+        // コピーボタンのクリックイベント
+        function setupCopyButtons() {
+            document.addEventListener('click', (e) => {
+                if (e.target.closest('.copy-button')) {
+                    e.preventDefault();
+                    const button = e.target.closest('.copy-button');
+                    const container = button.parentNode;
+                    const pre = container.querySelector('pre');
+                    const codeText = pre.textContent || pre.innerText;
+                    
+                    copyToClipboard(codeText, button);
+                }
+            });
+        }
+
+        // コピーボタンの初期化
+        addCopyButtons();
+        setupCopyButtons();
+
+        // クリックでのページ送り機能を削除
+    </script>
+</body>
+</html>
