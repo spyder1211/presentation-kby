@@ -549,7 +549,7 @@
     </div>
 
     <!-- スライド番号 -->
-    <div class="slide-number" id="slideNumber">1 / 12</div>
+    <div class="slide-number" id="slideNumber">1 / 13</div>
 
     <!-- プレゼンテーションコンテナ -->
     <div class="presentation-container">
@@ -995,6 +995,56 @@
                 </p>
             </div>
         </div>
+
+        <!-- スライド13: 応用編デモ：シフト表作成 -->
+        <div class="slide">
+            <h1><i class="fas fa-star"></i>応用編デモ</h1>
+            <h2><i class="fas fa-calendar-alt"></i> 複雑なシフト表もAIで一瞬で作成！</h2>
+
+            <div class="highlight-box" style="margin: 30px 0;">
+                <h3><i class="fas fa-lightbulb"></i> こんなこともできます</h3>
+                <p style="font-size: 1.3em; line-height: 1.8;">
+                    警備員の<strong>月間シフト表（カレンダー形式）</strong>を自動作成<br>
+                    複雑なローテーションも指示するだけで完成！
+                </p>
+            </div>
+
+            <div class="prompt-example">
+                <h3><i class="fas fa-pen"></i> プロンプト例</h3>
+                <div class="code-container">
+                    <pre><code>あなたは警備会社のスケジュール管理システムのAIアシスタントです。
+
+以下の条件に基づき、警備員の**月間シフト表（カレンダー形式）**を作成してください。
+
+### 条件
+- 対象月：2025年11月
+- 警備員：山田太郎、佐藤健、鈴木一郎 の3名
+- 勤務パターン：
+  - 早番：8:00〜16:00
+  - 夜勤：22:00〜6:00（翌日）
+  - 休：休日
+- 3名がローテーションで「早番 → 夜勤 → 休」を繰り返す
+- カレンダー形式（月曜始まり）
+- 出力形式：表（Markdown対応）
+- 各日のセル内に「日付」「担当者ごとの勤務」を表示する
+
+### 出力例フォーマット（Markdown表）
+| 日 | 月 | 火 | 水 | 木 | 金 | 土 |
+|----|----|----|----|----|----|----|
+| **1**<br>山田：夜勤<br>佐藤：早番<br>鈴木：休 | ... |
+
+見やすく美しく整った表形式で出力してください。</code></pre>
+                </div>
+            </div>
+
+            <div class="summary-box" style="margin-top: 30px;">
+                <h3><i class="fas fa-desktop"></i> 実演タイム！</h3>
+                <p style="font-size: 1.4em; line-height: 1.8;">
+                    このプロンプトを実際にChatGPTに入力して、<br>
+                    どんなシフト表が作成されるか見てみましょう！
+                </p>
+            </div>
+        </div>
     </div>
 
     <!-- ナビゲーションコントロール -->
@@ -1003,7 +1053,7 @@
             <i class="fas fa-chevron-left"></i>
             前へ
         </button>
-        <div class="slide-counter" id="slideCounter">1 / 12</div>
+        <div class="slide-counter" id="slideCounter">1 / 13</div>
         <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">
             次へ
             <i class="fas fa-chevron-right"></i>
